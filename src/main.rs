@@ -1,5 +1,12 @@
+use router::create_router;
+
+mod api;
+mod error;
+mod router;
+mod todo;
+
 #[tokio::main]
-fn main() {
+async fn main() {
     init_tracing();
 
     let dbpool = init_dbpool().await
@@ -10,10 +17,9 @@ fn main() {
     let bind_addr = std::env::var("BIND_ADDR")
         .unwrap_or_else(|_| "127.0.0.1:3000".to_string());
 
-    axum::Server::bind(&bind_addr.parse().unwrap())
-        .serve(router.into_make_service())
-        .await
-        .expect("unable to start server")
+    let listener = tokio::net::TcpListener::bind(&bind_addr).await.unwrap();
+    axum::serve(listener, router).await.expect("unable to start server");
+        
 }
 
 fn init_tracing() {
