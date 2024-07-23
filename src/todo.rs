@@ -2,13 +2,15 @@ use chrono::NaiveDateTime;
 use serde::{Deserialize, Serialize};
 use sqlx::{query, query_as, SqlitePool};
 
+use crate::error::Error;
+
 #[derive(Serialize, Clone, sqlx::FromRow)]
 pub struct Todo {
     id: i64,
     body: String,
     completed: bool,
-    created_at: NaiveDatetime,
-    updated_at: NaiveDatetime,
+    created_at: NaiveDateTime,
+    updated_at: NaiveDateTime,
 }
 
 impl Todo {
